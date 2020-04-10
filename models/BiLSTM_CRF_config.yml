@@ -1,0 +1,8 @@
+embedding_dim: 300
+hidden_dim: 150
+batch_size: 128
+dropout: 0.5
+tags:
+  - nr
+  - ns
+  - nt
