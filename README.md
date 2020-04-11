@@ -6,13 +6,13 @@
 
 ## 项目结构说明
 
-###数据
+### 数据
 
 **data**目录下存放训练和测试用的数据集，目前使用的是人民日报数据集。
 
 renmin.txt文件夹里存放的是未经处理的raw_data，数据处理脚本是data/ren_min_newspaper目录下的data_renmin_word.py文件，其中renmin2.txt, renmin3.txt, renmin4.txt都是数据处理脚本产生的。dev和train这两个文件是神经网络的数据输入，train是训练数据集，dev是测试/评估数据集。
 
-###模型参数
+### 模型参数
 
 **models**文件夹中存放的是**BiLSTM**和**BiLSTM_CRF**模型的初始化参数，输入数据和训练好的模型参数。
 
@@ -34,7 +34,7 @@ BiLSTM_CRF.py为BiLSTM_CRF模型, BiLSTM_CRF_model.py是对BiLSTM_CRF模型的�
 
 
 
-##运行项目
+## 运行项目
 
 ### 准备数据/数据预处理
 
@@ -59,7 +59,7 @@ def sentence2split():  # renmin4.txt中有2172条数据
 
 
 
-###训练模型:
+### 训练模型:
 
 以**BiLSTM_CRF**模型为例说明训练和测试模型的方法 （**BiLSTM**模型同理）
 
