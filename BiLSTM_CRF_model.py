@@ -55,7 +55,7 @@ class BiLSTM_CRF_Model(object):
         elif entry == 'test':
             self.train_manager = DataManager(batch_size=self.batch_size, tags=self.tags, data_type='train')
             self.dev_manager = DataManager(batch_size=30, data_type='dev', data_map_path=self.data_map_path)
-            data_map = self.load_data_map()
+            # data_map = self.load_data_map()
             self.model = BiLSTM_CRF(
                 tag_to_ix=self.train_manager.tag_to_ix,
                 batch_size=self.batch_size,
