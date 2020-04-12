@@ -123,13 +123,14 @@ BiLSTM_CRF model restore success!
 |            | Accuracy | Recall | F1   | 训练时长 |
 | ---------- | -------- | ------ | ---- | -------- |
 | BiLSTM     | 0.91     | 0.75   | 0.82 | 40-50min |
-| BiLSTM_CRF | 0.90     | 0.90   | 0,90 | 100min   |
+| BiLSTM_CRF | 0.90     | 0.90   | 0.90 | 100min   |
+| HMM        | 0.78     | 0.78   | 0.78 | 1min    |
 
 
 
 ## 待办事项
 
-HMM模型，CRF模型，Bert模型
+CRF模型，Bert模型
 
 
 
