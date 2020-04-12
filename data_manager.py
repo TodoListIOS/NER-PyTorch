@@ -4,7 +4,7 @@ import pickle as cPickle
 import torch
 
 
-class DataManager():
+class DataManager(object):
     def __init__(self, max_length=100, batch_size=20, data_type='train', data_map_path='', tags=[]):
         self.tags = []  # 数据集中出现的所有tag
         self.word_to_ix_size = 0  # word_to_ix的长度
@@ -76,6 +76,7 @@ class DataManager():
                 target.append(self.tag_to_ix.get(tag, 0))  # tag->number
 
         self.word_to_ix_size = len(self.word_to_ix.values())
+        self.tag_to_ix_size = len(self.tag_to_ix.values())
 
         for k, v in self.word_to_ix.items():
             self.ix_to_word[v] = k
