@@ -91,27 +91,15 @@ if __name__ == "__main__":
 
 测试结果如下所示:
 
-```
-/Users/yinyukang/Codes/python/NER-PyTorch/BiLSTM_CRF_model.py:74: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
-  config = yaml.load(fopen)
-data_manager.DataManager.load_data():
-train数据集中有30339个[sentence, target]
-train数据集 vocab size(len(word_to_ix)): 3788
-train数据集 unique tag(len(tag_to_ix)含START STOP): 12
-
-
-data_manager.DataManager.load_data():
-dev数据集中有7585个[sentence, target]
-dev数据集 vocab size(len(word_to_ix)): 3788
-dev数据集 unique tag(len(tag_to_ix)含START STOP): 12
-
-
-/Users/yinyukang/opt/anaconda3/envs/NLP/lib/python3.7/site-packages/torch/nn/modules/rnn.py:51: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
-  "num_layers={}".format(dropout, num_layers))
-BiLSTM_CRF model restore success!
-----------------------------------------------------------------------
-| end of test | Accuracy:  0.90 | Recall  0.90 | F1     0.90 | len(extracted_entities): 10781 | len(correct_entities): 10729
-----------------------------------------------------------------------
+```python
+......
+epoch 29 更新模型 _best_loss为   189.7366 epoch_loss为   187.8220 _best_loss变更为   187.8220
+BiLSTM_CRF model save success!
+| end of epoch 29 | Training time:   255.5920 |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+| end of epoch 29 | Accuracy:     0.9266 | Recall     0.9242 | F1     0.9254 | len(extracted_entities):      10702 | len(correct_entities):      10729
+------------------------------------------------------------------------------------------------------------------------------------------------------
+训练总用时:8095.559334278107s
 ```
 
 
@@ -123,7 +111,7 @@ BiLSTM_CRF model restore success!
 |            | Accuracy | Recall | F1   | 训练时长 |
 | ---------- | -------- | ------ | ---- | -------- |
 | BiLSTM     | 0.91     | 0.75   | 0.82 | 40-50min |
-| BiLSTM_CRF | 0.90     | 0.90   | 0.90 | 100min   |
+| BiLSTM_CRF | 0.92     | 0.92   | 0.92 | 130min   |
 | HMM        | 0.78     | 0.78   | 0.78 | 1min    |
 
 

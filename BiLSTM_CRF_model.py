@@ -50,8 +50,8 @@ class BiLSTM_CRF_Model(object):
                 use_gpu=False,
                 use_crf=True,  # 使用crf层
             )
-            # self.restore_model()
-            self.save_model()
+            self.restore_model()
+            # self.save_model()
         elif entry == 'test':
             self.train_manager = DataManager(batch_size=self.batch_size, tags=self.tags, data_type='train')
             self.dev_manager = DataManager(batch_size=30, data_type='dev', data_map_path=self.data_map_path)
@@ -121,7 +121,7 @@ class BiLSTM_CRF_Model(object):
         # optimizer = optim.Adam(self.model.parameters())
         optimizer = optim.SGD(self.model.parameters(), lr=0.005, weight_decay=1e-4)  # 官方版
 
-        for epoch in range(10):
+        for epoch in range(30):
             epoch_start_time = time.time()
             index = 0
             epoch_loss = 0  # 一个epoch的loss
@@ -129,7 +129,7 @@ class BiLSTM_CRF_Model(object):
                 index += 1
                 self.model.zero_grad()
 
-                # sentence{tuple:20}为填充后的, tags{tuple:20}为填充后的, length{tuple:20}为填充前的长度
+                # sentence{tuple:batch_size}为填充后的, tags{tuple:batch_size}为填充后的, length{tuple:batch_size}为填充前的长度
                 sentences, tags, lengths = zip(*batch)
                 sentences_tensor = torch.tensor(sentences, dtype=torch.long)  # shape: torch.Size([batch_size, max_sentence_len])
                 tags_tensor = torch.tensor(tags, dtype=torch.long)  # shape: torch.Size([batch_size, max_sentence_len])
@@ -153,8 +153,8 @@ class BiLSTM_CRF_Model(object):
                 #     epoch, progress, index, self.total_size, loss.cpu().tolist()[0]
                 # ))
 
-                print('| epoch {:2d} | {:2d}/{:2d} batches | '
-                      'batch loss {:5.2f} | avg loss {:5.2f}'.format(
+                print('| epoch {:2d} | {:4d}/{:4d} batches | '
+                      'batch loss {:10.4f} | avg loss {:10.4f}'.format(
                     epoch, index, self.total_size, loss_to_num, avg_loss))
 
                 loss.backward()
@@ -162,12 +162,14 @@ class BiLSTM_CRF_Model(object):
 
             # 一次训练结束后更新模型
             if self._best_loss > epoch_loss:
+                origin_best_loss = self._best_loss
                 self._best_loss = epoch_loss
-                print('epoch {} 更新模型'.format(epoch))
+                print('| epoch {:2d} | 更新模型 _best_loss为 {:10.4f} | epoch_loss为 {:10.4f} |'
+                      ' _best_loss变更为 {:10.4f} |'.format(epoch, origin_best_loss, epoch_loss, self._best_loss))
                 self.save_model()
                 # self.best_model = deepcopy(self.model)
 
-            print('| end of epoch {:2d} | Training time: {:5.2f} |'.format(epoch, time.time() - epoch_start_time))
+            print('| end of epoch {:2d} | Training time: {:10.4f} |'.format(epoch, time.time() - epoch_start_time))
             # 每个epoch结束的时候使用dev数据集对模型进行评估
             self.evaluate(epoch)
 
@@ -206,26 +208,26 @@ class BiLSTM_CRF_Model(object):
         # 模型抽取出的实体和正确的实体之间的交集
         intersection_entities = [i for i in extracted_entities if i in correct_entities]
 
-        print('-' * 70)
+        print('-' * 150)
 
         if len(intersection_entities) != 0:
             accuracy = float(len(intersection_entities)) / len(extracted_entities)
             recall = float(len(intersection_entities)) / len(correct_entities)
             f1 = (2 * accuracy * recall) / (accuracy + recall)
-            if epoch == -1: # test
-                print('| end of test | Accuracy: {:5.2f} | Recall {:5.2f} | '
-                      'F1 {:8.2f} | len(extracted_entities): {:5d} | len(correct_entities): {:5d}'
+            if epoch == -1:  # test
+                print('| end of test | Accuracy: {:10.4f} | Recall {:10.4f} | '
+                      'F1 {:10.4f} | len(extracted_entities): {:10d} | len(correct_entities): {:10d}'
                       .format(accuracy, recall, f1, len(extracted_entities), len(correct_entities)))
             else:
-                print('| end of epoch {:2d} | Accuracy: {:5.2f} | Recall {:5.2f} | '
-                      'F1 {:8.2f} | len(extracted_entities): {:5d} | len(correct_entities): {:5d}'
+                print('| end of epoch {:2d} | Accuracy: {:10.4f} | Recall {:10.4f} | '
+                      'F1 {:10.4f} | len(extracted_entities): {:10d} | len(correct_entities): {:10d}'
                       .format(epoch, accuracy, recall, f1, len(extracted_entities), len(correct_entities)))
         else:
             if epoch == -1:  # test
-                print('| end of test | Accuracy: {:5.2f}'.format(0))
+                print('| end of test | Accuracy: {:10.4f}'.format(0))
             else:
-                print('| end of epoch {:2d} | Accuracy: {:5.2f}'.format(epoch, 0))
-        print('-' * 70)
+                print('| end of epoch {:2d} | Accuracy: {:10.4f}'.format(epoch, 0))
+        print('-' * 150)
 
     def test(self):
         self.evaluate(epoch=-1)

@@ -1,6 +1,6 @@
 embedding_dim: 300
-hidden_dim: 150
-batch_size: 128
+hidden_dim: 200
+batch_size: 32
 dropout: 0.5
 tags:
   - nr

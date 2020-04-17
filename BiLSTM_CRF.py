@@ -192,7 +192,7 @@ class BiLSTM_CRF(nn.Module):
         :param length: shape为batch_size，存着每个sentence的被填充前的真实长度
         :return:
         """
-        self.batch_size = sentences.size(0)  # 20
+        self.batch_size = sentences.size(0)
 
         featss = self._get_lstm_features(sentences)  # BiLSTM的输出（还没经过CRF层）
         # feats的shape为torch.Size([batch_size, max_sentence_len, tagset_size])

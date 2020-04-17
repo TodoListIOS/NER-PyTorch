@@ -13,7 +13,7 @@ class DataManager(object):
         self.data_type = data_type
         self.data = []  # [[第0句的word_list, 第0句的tag_list], [第1句的word_list, 第1句的tag_list], ...]
         self.batch_data = []
-        self.word_to_ix = {"unk": 0}
+        self.word_to_ix = {"unk": 0, "pad": 1}
         self.ix_to_word = {}
         self.data_map_path = data_map_path  # 仅当data_type='dev'时使用,data_type='train'时不使用
 
@@ -55,10 +55,15 @@ class DataManager(object):
         target = []  # 一句话中的所有tag
 
         with open(self.data_path) as f:
+            ix = -1
             for line in f:
+                ix += 1  # 正在处理第ix行数据,便于后续DEBUG
                 line = line[:-1]  # 去掉一行末尾的'\n'
 
                 if line == '':  # 一句话结束了
+                    # 当数据类型为train时, sentence中不应该有0
+                    if self.data_type == 'train':
+                        assert 0 not in sentence
                     self.data.append([sentence, target])
                     sentence = []
                     target = []
@@ -72,6 +77,9 @@ class DataManager(object):
                     self.word_to_ix[word] = max(self.word_to_ix.values()) + 1
                 if tag not in self.tag_to_ix and self.data_type == "train" and tag in self.tags:  # tag_to_ix也只对训练数据集
                     self.tag_to_ix[tag] = len(self.tag_to_ix.keys())
+
+                # self.data_type == 'dev'时，有可能word不在self.word_to_ix中
+                # 此时约定这个word为'unk',对应的word_id为0
                 sentence.append(self.word_to_ix.get(word, 0))  # 在这一步直接word->number了
                 target.append(self.tag_to_ix.get(tag, 0))  # tag->number
 
@@ -123,11 +131,10 @@ class DataManager(object):
         max_length = max([len(i[0]) for i in c_data])  # 一批句子中的最大长度
         for i in c_data:
             # append之前i[0]:word2id(list), i[1]:tag2id(list)
-            i.append(len(i[0]))  # append之后i[0]:word2id, i[1]:tag2id, i[2]:len(i[0])
-            i[0] = i[0] + (max_length - len(i[0])) * [0]  # word2id(list)中缺少的部分补0 self.vocab中'unk'对应0
-            i[1] = i[1] + (max_length - len(i[1])) * [0]  # tag2id(list)中缺少的部分也补0 self.tag_map中'O'对应0
-            # i[0] = torch.tensor(i[0])
-            # i[1] = torch.tensor(i[1])
+            # append之后i[0]:word2id, i[1]:tag2id, i[2]:len(i[0])
+            i.append(len(i[0]))  # len(i[0])为这句话的真实长度
+            i[0] = i[0] + (max_length - len(i[0])) * [1]  # word2id(list)中缺少的部分补1 self.word_to_ix中'pad'对应1
+            i[1] = i[1] + (max_length - len(i[1])) * [0]  # tag2id(list)中缺少的部分也补0 self.tag_to_ix中'O'对应0
         return c_data
 
     # def iteration(self):
