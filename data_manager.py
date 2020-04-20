@@ -5,7 +5,8 @@ import torch
 
 
 class DataManager(object):
-    def __init__(self, max_length=100, batch_size=20, data_type='train', data_map_path='', tags=[]):
+    def __init__(self, max_length=100, batch_size=20, data_type='train', data_map_path='', tags=[],
+                 model_name='BiLSTM_CRF'):
         self.tags = []  # 数据集中出现的所有tag
         self.word_to_ix_size = 0  # word_to_ix的长度
         self.batch_size = batch_size
@@ -16,8 +17,13 @@ class DataManager(object):
         self.word_to_ix = {"unk": 0, "pad": 1}
         self.ix_to_word = {}
         self.data_map_path = data_map_path  # 仅当data_type='dev'时使用,data_type='train'时不使用
+        self.model_name = model_name
 
-        self.tag_to_ix = {"O": 0, "START": 1, "STOP": 2}
+        assert self.model_name in ['BiLSTM_CRF', 'BiLSTM', 'HMM']
+        if self.model_name is 'BiLSTM_CRF':
+            self.tag_to_ix = {"O": 0, "START": 1, "STOP": 2}
+        elif self.model_name is 'BiLSTM' or 'HMM':
+            self.tag_to_ix = {"O": 0}
         self.ix_to_tag = {}
 
         if data_type == "train":
