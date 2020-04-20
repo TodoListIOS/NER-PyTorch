@@ -17,7 +17,7 @@ class HMM_Model(object):
         self.model_param_path = os.path.join('models', 'HMM_model_params.pkl')
         self.load_config()  # self.embedding_dim, self.hidden_dim, self.batch_size, self.drop_out, self.tags
         if entry == 'train':
-            self.train_manager = DataManager(data_type='train', tags=self.tags)
+            self.train_manager = DataManager(data_type='train', tags=self.tags, model_name='HMM')
             data_map = {
                 "word_to_ix_size": self.train_manager.word_to_ix_size,  # word_to_ix的长度,初始化HMM模型
                 "tag_to_ix_size": self.train_manager.tag_to_ix_size,  # tag_to_ix的长度,初始化HMM模型
@@ -27,7 +27,7 @@ class HMM_Model(object):
                 "ix_to_tag": self.train_manager.ix_to_tag,
             }
             self.save_data_map(data_map)
-            self.dev_manager = DataManager(data_type='dev', data_map_path=self.data_map_path)
+            self.dev_manager = DataManager(data_type='dev', data_map_path=self.data_map_path, model_name='HMM')
 
             self.model = HMM(hidden_state_num=self.train_manager.tag_to_ix_size,
                              observable_state_num=self.train_manager.word_to_ix_size)
@@ -35,8 +35,8 @@ class HMM_Model(object):
             self.save_model()
             # self.restore_model()
         elif entry == 'test':
-            self.train_manager = DataManager(tags=self.tags, data_type='train')
-            self.dev_manager = DataManager(data_type='dev', data_map_path=self.data_map_path)
+            self.train_manager = DataManager(tags=self.tags, data_type='train', model_name='HMM')
+            self.dev_manager = DataManager(data_type='dev', data_map_path=self.data_map_path, model_name='HMM')
             self.model = HMM(hidden_state_num=self.train_manager.tag_to_ix_size,
                              observable_state_num=self.train_manager.word_to_ix_size)
             self.restore_model()
@@ -103,17 +103,17 @@ class HMM_Model(object):
         # 模型抽取出的实体和正确的实体之间的交集
         intersection_entities = [i for i in extracted_entities if i in correct_entities]
 
-        print('-' * 70)
+        print('-' * 150)
         if len(intersection_entities) != 0:
             accuracy = float(len(intersection_entities)) / len(extracted_entities)
             recall = float(len(intersection_entities)) / len(correct_entities)
             f1 = (2 * accuracy * recall) / (accuracy + recall)
-            print('| end of test | Accuracy: {:5.2f} | Recall {:5.2f} | '
-                  'F1 {:8.2f} | len(extracted_entities): {:5d} | len(correct_entities): {:5d}'
+            print('| end of test | Accuracy: {:10.4f} | Recall {:10.4f} | '
+                  'F1 {:10.4f} | len(extracted_entities): {:10d} | len(correct_entities): {:10d}'
                   .format(accuracy, recall, f1, len(extracted_entities), len(correct_entities)))
         else:
-            print('| end of test | Accuracy: {:5.2f}'.format(0))
-        print('-' * 70)
+            print('| end of test | Accuracy: {:10.4f}'.format(0))
+        print('-' * 150)
 
 
 if __name__ == '__main__':
