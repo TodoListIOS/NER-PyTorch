@@ -1,6 +1,6 @@
 # Named Entity Recognition implemented by PyTorch
 
-采用PyTorch框架实现命名实体识别，目前已经实现了**BiLSTM**和**BiLSTM_CRF**两种神经网络，含batch。
+采用PyTorch框架实现命名实体识别，目前已经实现了**BiLSTM**和**BiLSTM_CRF**两种神经网络以及**HMM**模型，均含batch。
 
 
 
@@ -14,7 +14,9 @@ renmin.txt文件夹里存放的是未经处理的raw_data，数据处理脚本�
 
 ### 模型参数
 
-**models**文件夹中存放的是**BiLSTM**和**BiLSTM_CRF**模型的初始化参数，输入数据和训练好的模型参数。
+**models**文件夹中存放的是**BiLSTM**和**BiLSTM_CRF**以及**HMM**模型的初始化参数，输入数据和训练好的模型参数。
+
+以BiLSTM模型为例:
 
 BiLSTM_config.yml中存放的是BiLSTM模型初始化参数: embedding_dim, hidden_dim, batch_size, dropout, tags。
 
@@ -26,12 +28,15 @@ BiLSTM_data.pkl中存放的是BiLSTM模型的数据: batch_size, word_to_ix_size
 
 **BiLSTM**模型:
 
-BiLSTM.py为BiLSTM的模型，BiLSTM_model.py是对BiLSTM模型的封装，包含了训练、测试等功能。
+BiLSTM.py为BiLSTM的模型，BiLSTM_model.py是对BiLSTM模型的封装，包含了训练、测试功能。
 
 **BiLSTM_CRF**模型：
 
-BiLSTM_CRF.py为BiLSTM_CRF模型, BiLSTM_CRF_model.py是对BiLSTM_CRF模型的封装，同样包含了训练测试等功能。
+BiLSTM_CRF.py为BiLSTM_CRF模型, BiLSTM_CRF_model.py是对BiLSTM_CRF模型的封装，同样包含了训练、测试功能。
 
+**HMM**模型:
+
+HMM.py为HMM模型, HMM_model.py是对HMM模型的封装，同样包含训练、测试功能。
 
 
 ## 运行项目
@@ -61,7 +66,7 @@ def sentence2split():  # renmin4.txt中有2172条数据
 
 ### 训练模型:
 
-以**BiLSTM_CRF**模型为例说明训练和测试模型的方法 （**BiLSTM**模型同理）
+以**BiLSTM_CRF**模型为例说明训练和测试模型的方法 （**BiLSTM**模型，**HMM**模型同理）
 
 进入到**BiLSTM_CRF_model.py**文件中，如果是想在我训练的基础上继续对模型进行训练的话，需要在 \_\_init \_\_函数的最后注释掉self.save_model()，并保留self.restore_model()。
 
@@ -108,17 +113,17 @@ BiLSTM_CRF model save success!
 
 训练全部的数据，每次训练都是30个epoch
 
-|            | Accuracy | Recall | F1   | 训练时长 |
-| ---------- | -------- | ------ | ---- | -------- |
-| BiLSTM     | 0.91     | 0.75   | 0.82 | 40-50min |
-| BiLSTM_CRF | 0.92     | 0.92   | 0.92 | 130min   |
-| HMM        | 0.78     | 0.78   | 0.78 | 1min    |
+|            | Accuracy | Recall | F1   | 训练epoch | 每个epoch时长 |
+| ---------- | -------- | ------ | ---- | -------- | ------ |
+| BiLSTM     | 0.9359     | 0.8280   | 0.8787 | 90个 | 80s |
+| BiLSTM_CRF | 0.9216     | 0.9204   | 0.9210 | 30个   | 244s |
+| HMM        | 0.7786     | 0.7761   | 0.7774 | N/A    | N/A |
 
 
 
 ## 待办事项
 
-CRF模型，Bert模型
+Bert模型
 
 
 

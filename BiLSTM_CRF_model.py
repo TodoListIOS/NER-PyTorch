@@ -27,7 +27,8 @@ class BiLSTM_CRF_Model(object):
         self.load_config()  # emb_size, hid_size, batch_size, drop_out, model_path, tags
         self._best_loss = 1e18
         if entry == "train":
-            self.train_manager = DataManager(batch_size=self.batch_size, tags=self.tags, data_type='train')
+            self.train_manager = DataManager(batch_size=self.batch_size, tags=self.tags, data_type='train',
+                                             model_name='BiLSTM_CRF')
             self.total_size = len(self.train_manager.batch_data)  # 多少批数据
             data = {
                 "batch_size": self.train_manager.batch_size,  # 一批数据的量，初始化神经网络的参数
@@ -38,7 +39,8 @@ class BiLSTM_CRF_Model(object):
                 "ix_to_tag": self.train_manager.ix_to_tag,
             }
             self.save_data_map(data)
-            self.dev_manager = DataManager(batch_size=30, data_type="dev", data_map_path=self.data_map_path)
+            self.dev_manager = DataManager(batch_size=30, data_type="dev", data_map_path=self.data_map_path,
+                                           model_name='BiLSTM_CRF')
 
             self.model = BiLSTM_CRF(
                 tag_to_ix=self.train_manager.tag_to_ix,  # 训练数据的tag_to_ix
@@ -53,8 +55,10 @@ class BiLSTM_CRF_Model(object):
             self.restore_model()
             # self.save_model()
         elif entry == 'test':
-            self.train_manager = DataManager(batch_size=self.batch_size, tags=self.tags, data_type='train')
-            self.dev_manager = DataManager(batch_size=30, data_type='dev', data_map_path=self.data_map_path)
+            self.train_manager = DataManager(batch_size=self.batch_size, tags=self.tags, data_type='train',
+                                             model_name='BiLSTM_CRF')
+            self.dev_manager = DataManager(batch_size=30, data_type='dev', data_map_path=self.data_map_path,
+                                           model_name='BiLSTM_CRF')
             # data_map = self.load_data_map()
             self.model = BiLSTM_CRF(
                 tag_to_ix=self.train_manager.tag_to_ix,
